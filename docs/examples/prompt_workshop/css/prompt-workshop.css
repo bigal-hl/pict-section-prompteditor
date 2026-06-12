@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after
+{
+	box-sizing: border-box;
+}
+
+body
+{
+	margin: 0;
+	padding: 0;
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	font-size: 15px;
+	line-height: 1.6;
+	color: #111827;
+	background: #f9fafb;
+	-webkit-font-smoothing: antialiased;
+}
+
+code
+{
+	font-family: "SF Mono", "Fira Code", "Fira Mono", "Cascadia Code", monospace;
+	font-size: 0.9em;
+	padding: 2px 5px;
+	background: #f3f4f6;
+	border-radius: 3px;
+}
+
+/* Theme tokens so themed pieces (the modal dialogs and toasts, the section
+   chrome) render in this bare example, which has no theme provider. A real
+   Pict host supplies these through its theme. */
+:root
+{
+	--pict-modal-overlay-bg: rgba(15, 23, 32, 0.45);
+	--theme-color-brand-primary: #2880a6;
+	--theme-color-brand-primary-hover: #20678a;
+	--theme-color-border-default: #d6dde3;
+	--theme-color-border-light: #e7ecf0;
+	--theme-color-text-primary: #1f2430;
+	--theme-color-text-secondary: #5b6470;
+	--theme-color-text-muted: #97a1ab;
+	--theme-color-text-on-brand: #ffffff;
+	--theme-color-background-primary: #ffffff;
+	--theme-color-background-panel: #ffffff;
+	--theme-color-background-secondary: #f7f9fb;
+	--theme-color-background-tertiary: #eef2f6;
+	--theme-color-background-hover: #eef2f6;
+	--theme-color-status-error: #c0392b;
+	--theme-color-status-warning: #d98b58;
+	--theme-color-status-success: #2e7d4f;
+	--theme-color-status-info: #2880a6;
+}
+
+/* Pict Example Header */
+.pict-example-header { display: flex; align-items: stretch; background: #264653; border-bottom: 3px solid #E76F51; }
+.pict-example-badge { background: #E76F51; color: var(--theme-color-background-panel, #fff); padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
+.pict-example-badge svg { width: 14px; height: 14px; fill: var(--theme-color-background-panel, #fff); flex-shrink: 0; }
+.pict-example-app-name { padding: 0.6rem 1rem; color: #FAEDCD; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; }
+.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #D4A373; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
+
+/* Page layout */
+.pw-wrap { max-width: 1060px; margin: 26px auto 40px; padding: 0 16px; }
+.pw-sub { color: #5b6470; font-size: 13px; margin: 0 0 16px; }
+.pw-card { background: #fff; border: 1px solid #e2e8ee; border-radius: 12px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(20, 40, 60, 0.06); }
+.pw-foot { color: #97a1ab; font-size: 12px; margin-top: 14px; text-align: center; }
