@@ -114,6 +114,30 @@ suite('PromptProvider', function ()
 				.then((pUpdated) => { libExpect(pUpdated.Meta).to.deep.equal(tmpMeta); });
 		});
 
+		test('IncludeSegmentHeadings defaults true, saves with the prompt, survives unrelated patches', function ()
+		{
+			let tmpProvider = freshProvider();
+			return tmpProvider.createPrompt({ TypeKey: 't' })
+				.then((pPrompt) =>
+				{
+					libExpect(pPrompt.IncludeSegmentHeadings).to.equal(true);
+					return tmpProvider.updatePrompt(pPrompt.Key, { IncludeSegmentHeadings: false });
+				})
+				.then((pUpdated) =>
+				{
+					libExpect(pUpdated.IncludeSegmentHeadings).to.equal(false);
+					return tmpProvider.updatePrompt(pUpdated.Key, { Title: 'Renamed' });
+				})
+				.then((pPatched) => { libExpect(pPatched.IncludeSegmentHeadings).to.equal(false); });
+		});
+
+		test('createPrompt honors an explicit IncludeSegmentHeadings false', function ()
+		{
+			let tmpProvider = freshProvider();
+			return tmpProvider.createPrompt({ TypeKey: 't', IncludeSegmentHeadings: false })
+				.then((pPrompt) => { libExpect(pPrompt.IncludeSegmentHeadings).to.equal(false); });
+		});
+
 		test('prompts list newest-updated first', function ()
 		{
 			let tmpProvider = freshProvider();

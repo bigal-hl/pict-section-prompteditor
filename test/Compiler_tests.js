@@ -83,6 +83,30 @@ suite('PromptCompiler', function ()
 			libExpect(tmpSource).to.not.contain('# X');
 			libExpect(tmpSource).to.contain('### Prompt');
 		});
+
+		test('IncludeSegmentHeadings false compiles bare bodies; the title heading stays', function ()
+		{
+			let tmpPrompt =
+			{
+				Title: 'Add the thing',
+				TypeKey: 'feature-request',
+				IncludeSegmentHeadings: false,
+				Segments: { 'context': 'We have a system.', 'request': 'Add a thing.', 'success-criteria': 'The thing exists.' }
+			};
+			let tmpSource = libCompiler.assembleSource(tmpPrompt, _FEATURE_REQUEST);
+			libExpect(tmpSource).to.contain('# Add the thing');
+			libExpect(tmpSource).to.not.contain('## Context');
+			libExpect(tmpSource).to.not.contain('## Request');
+			libExpect(tmpSource).to.contain('We have a system.\n\nAdd a thing.\n\nThe thing exists.');
+		});
+
+		test('IncludeSegmentHeadings defaults on, and anything but explicit false keeps headings', function ()
+		{
+			let tmpType = { Key: 'f', Name: 'F', Segments: [{ Key: 'body', Name: 'Prompt' }] };
+			libExpect(libCompiler.assembleSource({ Title: 'X', Segments: { 'body': 'Hi.' } }, tmpType)).to.contain('## Prompt');
+			libExpect(libCompiler.assembleSource({ Title: 'X', IncludeSegmentHeadings: undefined, Segments: { 'body': 'Hi.' } }, tmpType)).to.contain('## Prompt');
+			libExpect(libCompiler.assembleSource({ Title: 'X', IncludeSegmentHeadings: false, Segments: { 'body': 'Hi.' } }, tmpType)).to.not.contain('## Prompt');
+		});
 	});
 
 	suite('generate', function ()

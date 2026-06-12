@@ -136,6 +136,8 @@ const _DefaultConfiguration =
 		.pspe-editor-head { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
 		.pspe-editor-title { flex: 1; min-width: 200px; font-weight: 650; font-size: 15px; }
 		.pspe-type-desc { font-size: 12px; color: var(--theme-color-text-muted, #97a1ab); margin: -6px 0 12px; }
+		.pspe-editor-opts { margin: -4px 0 12px; }
+		.pspe-editor-opt { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--theme-color-text-muted, #97a1ab); cursor: pointer; user-select: none; }
 
 		.pspe-segment {
 			border: 1px solid var(--theme-color-border-light, #e7ecf0); border-radius: 10px;
@@ -254,6 +256,7 @@ const _DefaultConfiguration =
 	{~TS:PromptEditor-PromptActions:Record.ActionsSlot~}
 </div>
 <div class="pspe-type-desc">{~D:Record.TypeDescription~}</div>
+{~TS:PromptEditor-EditorOptions:Record.OptionsSlot~}
 {~TS:PromptEditor-Segment:Record.Segments~}
 {~TS:PromptEditor-GenerateBar:Record.GenerateSlot~}
 {~TS:PromptEditor-PreviewPanel:Record.PreviewPanelSlot~}`
@@ -281,6 +284,17 @@ const _DefaultConfiguration =
 		{
 			Hash: 'PromptEditor-PromptActions',
 			Template: /*html*/`<button class="pspe-btn pspe-btn-sm" title="Duplicate this prompt" onclick="_Pict.views['{~D:Record.ViewHash~}'].duplicatePrompt()">Duplicate</button><button class="pspe-btn pspe-btn-sm pspe-btn-danger" onclick="_Pict.views['{~D:Record.ViewHash~}'].deletePrompt()">Delete</button>`
+		},
+		{
+			Hash: 'PromptEditor-EditorOptions',
+			Template: /*html*/`
+<div class="pspe-editor-opts">
+	<label class="pspe-editor-opt" title="When off, the assembled prompt is just the segment bodies, no ## headings above them.">
+		<input type="checkbox" {~D:Record.SegmentHeadingsChecked~}
+			onchange="_Pict.views['{~D:Record.ViewHash~}'].setSegmentHeadings(this.checked)">
+		Segment headings in the output
+	</label>
+</div>`
 		},
 		{
 			Hash: 'PromptEditor-Segment',
@@ -909,6 +923,11 @@ class PictViewPromptEditor extends libPictView
 				SelectedAttr: (pTypeOption.Key === pPrompt.TypeKey) ? 'selected' : ''
 			})),
 			ActionsSlot: pReadOnly ? [] : [{ ViewHash: this.Hash }],
+			OptionsSlot: pReadOnly ? [] :
+			[{
+				ViewHash: this.Hash,
+				SegmentHeadingsChecked: (pPrompt.IncludeSegmentHeadings === false) ? '' : 'checked'
+			}],
 			Segments: tmpSegments,
 			GenerateSlot: pReadOnly ? [] :
 			[{
@@ -1077,6 +1096,7 @@ class PictViewPromptEditor extends libPictView
 				TypeKey: tmpPrompt.TypeKey,
 				Title: tmpPrompt.Title + ' (copy)',
 				Segments: JSON.parse(JSON.stringify(tmpPrompt.Segments || {})),
+				IncludeSegmentHeadings: tmpPrompt.IncludeSegmentHeadings !== false,
 				Meta: JSON.parse(JSON.stringify(tmpPrompt.Meta || {})),
 				Author: this.options.CurrentUser
 			})
@@ -1121,6 +1141,24 @@ class PictViewPromptEditor extends libPictView
 		this._provider.updatePrompt(tmpPrompt.Key, { Segments: tmpPrompt.Segments })
 			.then((pSaved) => { this._fire('onPromptSaved', pSaved); })
 			.catch((pError) => this._toast('Segment save failed: ' + pError.message, 'error'));
+	}
+
+	// The per-prompt "segment headings in the output" toggle: saves with the
+	// prompt, and the compiler reads it on every assemble (preview, generate,
+	// zip). No re-render needed - the checkbox itself holds the new state -
+	// but an open preview re-rolls so what you see matches what you would get.
+	setSegmentHeadings(pChecked)
+	{
+		let tmpPrompt = this._activePrompt();
+		if (!tmpPrompt) { return; }
+		tmpPrompt.IncludeSegmentHeadings = !!pChecked;
+		this._provider.updatePrompt(tmpPrompt.Key, { IncludeSegmentHeadings: !!pChecked })
+			.then((pSaved) =>
+			{
+				this._fire('onPromptSaved', pSaved);
+				if (this._ui.Preview && this._ui.Preview.PromptKey === tmpPrompt.Key) { this.previewOnce(); }
+			})
+			.catch((pError) => this._toast('Save failed: ' + pError.message, 'error'));
 	}
 
 	toggleSegmentPreview(pSegmentKey)

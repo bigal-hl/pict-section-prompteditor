@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-06-11T21:23:43.471Z",
+	"Generated": "2026-06-12T20:30:31.667Z",
 	"Mode": "module",
 	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
@@ -89,22 +89,29 @@
 			}
 		],
 		"DocFiles": [
+			".nojekyll",
 			"README.md",
 			"_brand.json",
 			"_cover.md",
 			"_sidebar.md",
 			"_topbar.md",
+			"_version.json",
 			"api.md",
 			"architecture.md",
 			"configuration.md",
 			"examples/README.md",
 			"examples/prompt_workshop/README.md",
 			"examples/prompt_workshop/codemirror-bundle.js",
+			"examples/prompt_workshop/css/prompt-workshop.css",
 			"examples/prompt_workshop/index.html",
+			"examples/prompt_workshop/js/pict.min.js",
 			"examples/prompt_workshop/pict-section-prompteditor-example-prompt-workshop.compatible.min.js",
 			"examples.md",
 			"functions.md",
-			"getting-started.md"
+			"getting-started.md",
+			"index.html",
+			"retold-catalog.json",
+			"retold-keyword-index.json"
 		]
 	},
 	"Groups": []

@@ -16,9 +16,11 @@
  *     drawn by {~WordListEntry:Name~} is weight / sum(weights).
  *
  *   Prompt     { Key, Title, TypeKey, Segments: { segmentKey: markdown },
- *                Author, Meta, CreatedAt, UpdatedAt }
+ *                IncludeSegmentHeadings, Author, Meta, CreatedAt, UpdatedAt }
  *     A crafted prompt. Segments hold the markdown for each of the prompt
- *     type's segments, keyed by segment Key. Meta is an opaque object the
+ *     type's segments, keyed by segment Key. IncludeSegmentHeadings (default
+ *     true) decides whether the compiler writes the ## segment headings above
+ *     each body in the assembled output. Meta is an opaque object the
  *     provider round-trips untouched -- the seam where a host hangs ratings,
  *     version pointers, or anything else.
  *
@@ -208,6 +210,7 @@ class InMemoryPromptProvider extends PromptDataProvider
 			Title: String(tmpDraft.Title || 'Untitled prompt'),
 			TypeKey: String(tmpDraft.TypeKey),
 			Segments: (tmpDraft.Segments && typeof tmpDraft.Segments === 'object') ? this._clone(tmpDraft.Segments) : {},
+			IncludeSegmentHeadings: (tmpDraft.IncludeSegmentHeadings === false) ? false : true,
 			Author: tmpDraft.Author || null,
 			Meta: (typeof tmpDraft.Meta === 'undefined') ? {} : this._clone(tmpDraft.Meta),
 			CreatedAt: tmpNow,
@@ -225,6 +228,7 @@ class InMemoryPromptProvider extends PromptDataProvider
 		if (typeof tmpPatch.Title !== 'undefined') { tmpPrompt.Title = String(tmpPatch.Title); }
 		if (typeof tmpPatch.TypeKey !== 'undefined') { tmpPrompt.TypeKey = String(tmpPatch.TypeKey); }
 		if (typeof tmpPatch.Segments !== 'undefined') { tmpPrompt.Segments = this._clone(tmpPatch.Segments || {}); }
+		if (typeof tmpPatch.IncludeSegmentHeadings !== 'undefined') { tmpPrompt.IncludeSegmentHeadings = (tmpPatch.IncludeSegmentHeadings === false) ? false : true; }
 		if (typeof tmpPatch.Meta !== 'undefined') { tmpPrompt.Meta = this._clone(tmpPatch.Meta); }
 		tmpPrompt.UpdatedAt = this._now();
 		return Promise.resolve(this._clone(tmpPrompt));

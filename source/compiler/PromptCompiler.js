@@ -31,6 +31,12 @@ function slug(pText)
 
 /**
  * Assemble a prompt's markdown source from its type's segments.
+ *
+ * Segment headings (## Context and friends) are on by default; a prompt that
+ * carries IncludeSegmentHeadings: false compiles bare segment bodies instead,
+ * so the author decides per prompt whether the structure shows in the output.
+ * The document title heading stays governed by the IncludeTitleHeading option.
+ *
  * @param {object} pPrompt - the prompt record
  * @param {object} pType - the resolved prompt type
  * @param {object} [pOptions] - { IncludeTitleHeading: true, SegmentHeadingLevel: 2 }
@@ -40,6 +46,7 @@ function assembleSource(pPrompt, pType, pOptions)
 {
 	let tmpOptions = pOptions || {};
 	let tmpIncludeTitle = (typeof tmpOptions.IncludeTitleHeading === 'undefined') ? true : !!tmpOptions.IncludeTitleHeading;
+	let tmpIncludeSegmentHeadings = !(pPrompt && pPrompt.IncludeSegmentHeadings === false);
 	let tmpHeading = '#'.repeat(Math.max(1, Math.min(6, Number(tmpOptions.SegmentHeadingLevel) || 2)));
 	let tmpSegments = (pType && Array.isArray(pType.Segments)) ? pType.Segments : [];
 	let tmpBodies = (pPrompt && pPrompt.Segments) ? pPrompt.Segments : {};
@@ -60,7 +67,9 @@ function assembleSource(pPrompt, pType, pOptions)
 			if (tmpSegment.Optional || tmpSegment.Fixed) { continue; }
 			tmpBody = '(nothing written for this segment yet)';
 		}
-		tmpParts.push(tmpHeading + ' ' + String(tmpSegment.Name || tmpSegment.Key) + '\n\n' + tmpBody);
+		tmpParts.push(tmpIncludeSegmentHeadings
+			? (tmpHeading + ' ' + String(tmpSegment.Name || tmpSegment.Key) + '\n\n' + tmpBody)
+			: tmpBody);
 	}
 
 	return tmpParts.join('\n\n') + '\n';

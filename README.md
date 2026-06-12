@@ -9,6 +9,7 @@ A prompt crafting and management section for the [Pict](https://github.com/fable
 ## Features
 
 - Typed prompts with markdown segments (Context / Request / Success Criteria and friends), plus **fixed preamble** segments for locked team standards
+- A per-prompt "segment headings in the output" toggle, saved with the prompt: on for structured documents (`## Context` above each block), off for bare bodies
 - Weighted word list matrices: `[["Tyrannosaurus", 3], ["Diplodocus", 1]]` draws 75/25, with live share percentages as you curate
 - The `{~WordListEntry:Name~}` template expression (short form `{~WLE:~}`), with an optional miss default: `{~WLE:Name:fallback~}`
 - Generation runs the **real pict template engine**, so every pict expression works inside a prompt
