@@ -732,6 +732,17 @@ class PictViewPromptEditor extends libPictView
 		this.render();
 	}
 
+	/* Replace the selectable prompt-type set (the cascade behind the type dropdown) and repaint. The
+	   type list is cached as this._types at construction; a host that updates its shape library
+	   mid-session calls this so the dropdown reflects the new set without a full page reload. */
+	setPromptTypes(pTypes)
+	{
+		this.options.PromptTypes = pTypes || null;
+		this._types = libTypes.resolvePromptTypes(this.options.PromptTypes);
+		this._shape();
+		this.render();
+	}
+
 	setDataProvider(pProvider)
 	{
 		this._provider = pProvider || null;
